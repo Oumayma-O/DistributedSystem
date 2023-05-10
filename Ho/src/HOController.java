@@ -8,7 +8,7 @@ import com.rabbitmq.client.ConnectionFactory;
 
 public class HOController {
 
-    private static final String EXCHANGE_NAME = "bo_to_ho";
+    private static final String EXCHANGE_NAME = "bo_to_ho_exchange";
     private static final String BO1_QUEUE_NAME = "bo1_queue";
     private static final String BO2_QUEUE_NAME = "bo2_queue";
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ho";

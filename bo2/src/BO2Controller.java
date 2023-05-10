@@ -32,7 +32,7 @@ public class BO2Controller {
         List<ProductSale> unsentSales = getUnsentSales();
         for (ProductSale sale : unsentSales) {
             mqChannel.basicPublish(HO_EXCHANGE_NAME, HO_ROUTING_KEY, MessageProperties.PERSISTENT_BASIC, sale.toString().getBytes());
-            markSaleAsSent(sale.getProduct());
+            markSaleAsSent(sale.getId());
         }
     }
 
@@ -48,6 +48,7 @@ public class BO2Controller {
         while (rs.next()) {
             ProductSale sale = new ProductSale();
 
+            sale.setId(rs.getInt("Id"));
             sale.setDate(Date.valueOf(rs.getString("date")));
             sale.setRegion(rs.getString("region"));
             sale.setProduct(rs.getString("product"));
@@ -64,13 +65,13 @@ public class BO2Controller {
         return unsentSales;
     }
 
-    public void markSaleAsSent(String Product) throws SQLException, ClassNotFoundException {
+    public void markSaleAsSent(int id) throws SQLException, ClassNotFoundException {
         // Set up MySQL database connection
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection dbConnection = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/bo2", "root", "");
-        PreparedStatement stmt = dbConnection.prepareStatement("UPDATE `product sales` SET sent = 1 WHERE Product = ?");
-        stmt.setString(1, Product);
+        PreparedStatement stmt = dbConnection.prepareStatement("UPDATE `product sales` SET sent = 1 WHERE id = ?");
+        stmt.setInt(1, id);
         stmt.executeUpdate();
         stmt.close();
     }

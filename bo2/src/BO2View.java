@@ -21,12 +21,12 @@ public class BO2View {
     }
 
     private void createGUI() {
-        JFrame frame = new JFrame("BO2 View");
+        JFrame frame = new JFrame("BO1 View");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout());
 
-        tableModel = new DefaultTableModel(new String[]{"Date", "Region", "Product", "Qty", "Cost", "Amt", "Tax", "Total", "Sent"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"Id","Date", "Region", "Product", "Qty", "Cost", "Amt", "Tax", "Total", "Sent"}, 0);
         table = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(table);
         panel.add(scrollPane, BorderLayout.CENTER);
@@ -53,12 +53,10 @@ public class BO2View {
             List<ProductSale> unsentSales = boController.getUnsentSales();
             tableModel.setRowCount(0);
             for (ProductSale sale : unsentSales) {
-                Object[] row = new Object[]{ sale.getDate(), sale.getRegion(), sale.getProduct(), sale.getQty(), sale.getCost(), sale.getAmt(), sale.getTax(), sale.getTotal(), sale.isSent()};
+                Object[] row = new Object[]{ sale.getId(),sale.getDate(), sale.getRegion(), sale.getProduct(), sale.getQty(), sale.getCost(), sale.getAmt(), sale.getTax(), sale.getTotal(), sale.isSent()};
                 tableModel.addRow(row);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

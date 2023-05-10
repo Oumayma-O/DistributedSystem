@@ -2,7 +2,7 @@ import java.sql.Date;
 
 class ProductSale {
 
-
+    private int id;
     private Date date;
     private String region;
     private String product;
@@ -13,7 +13,7 @@ class ProductSale {
     private double total;
     private boolean sent;
 
-    public ProductSale(Date date, String region, String product, int qty, float cost, double amt, float tax, double total, boolean sent) {
+    public ProductSale( Date date, String region, String product, int qty, float cost, double amt, float tax, double total, boolean sent) {
 
         this.date = date;
         this.region = region;
@@ -30,6 +30,13 @@ class ProductSale {
 
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Date getDate() {
         return date;

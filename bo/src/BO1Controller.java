@@ -8,9 +8,9 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.MessageProperties;
 
 public class BO1Controller {
-    private static final String BO_QUEUE_NAME = "bo2_queue";
+    private static final String BO_QUEUE_NAME = "bo1_queue";
     private static final String HO_EXCHANGE_NAME = "bo_to_ho_exchange";
-    private static final String HO_ROUTING_KEY = "bo2_to_ho_queue";
+    private static final String HO_ROUTING_KEY = "bo1_to_ho_queue";
 
 
     private Connection dbConnection;
@@ -32,7 +32,7 @@ public class BO1Controller {
         List<ProductSale> unsentSales = getUnsentSales();
         for (ProductSale sale : unsentSales) {
             mqChannel.basicPublish(HO_EXCHANGE_NAME, HO_ROUTING_KEY, MessageProperties.PERSISTENT_BASIC, sale.toString().getBytes());
-            markSaleAsSent(sale.getProduct());
+            markSaleAsSent(sale.getId());
         }
     }
 
@@ -40,7 +40,7 @@ public class BO1Controller {
         // Set up MySQL database connection
         Class.forName("com.mysql.cj.jdbc.Driver");
         this.dbConnection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/bo2", "root", "");
+                "jdbc:mysql://localhost:3306/bo1", "root", "");
 
         List<ProductSale> unsentSales = new ArrayList<ProductSale>();
         PreparedStatement stmt = dbConnection.prepareStatement("SELECT * FROM `product sales` WHERE sent = 0");
@@ -48,6 +48,7 @@ public class BO1Controller {
         while (rs.next()) {
             ProductSale sale = new ProductSale();
 
+            sale.setId(rs.getInt("Id"));
             sale.setDate(Date.valueOf(rs.getString("date")));
             sale.setRegion(rs.getString("region"));
             sale.setProduct(rs.getString("product"));
@@ -64,13 +65,13 @@ public class BO1Controller {
         return unsentSales;
     }
 
-    public void markSaleAsSent(String Product) throws SQLException, ClassNotFoundException {
+    public void markSaleAsSent(int id) throws SQLException, ClassNotFoundException {
         // Set up MySQL database connection
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection dbConnection = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/bo2", "root", "");
-        PreparedStatement stmt = dbConnection.prepareStatement("UPDATE `product sales` SET sent = 1 WHERE Product = ?");
-        stmt.setString(1, Product);
+                "jdbc:mysql://localhost:3306/bo1", "root", "");
+        PreparedStatement stmt = dbConnection.prepareStatement("UPDATE `product sales` SET sent = 1 WHERE id = ?");
+        stmt.setInt(1, id);
         stmt.executeUpdate();
         stmt.close();
     }

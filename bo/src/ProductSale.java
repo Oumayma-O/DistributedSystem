@@ -13,8 +13,8 @@ class ProductSale {
     private double total;
     private boolean sent;
 
-    public ProductSale(int id, Date date, String region, String product, int qty, float cost, double amt, float tax, double total, boolean sent) {
-        this.id = id;
+    public ProductSale(Date date, String region, String product, int qty, float cost, double amt, float tax, double total, boolean sent) {
+
         this.date = date;
         this.region = region;
         this.product = product;
